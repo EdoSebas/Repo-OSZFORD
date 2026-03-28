@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OSZFORD — PreOp Digital</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800&family=Barlow+Condensed:wght@700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+
+<body>
+
+  <!-- NAV — sin "Demo", 4 botones -->
+  <nav class="app-nav">
+    <button class="nav-btn" id="nb-0" onclick="goTo('s-login')">Login</button>
+    <button class="nav-btn" id="nb-1" onclick="goTo('s-home')">Inicio</button>
+    <button class="nav-btn" id="nb-2" onclick="goTo('s-inspect')">Inspección</button>
+    <button class="nav-btn" id="nb-3" onclick="goTo('s-km')">Kilometraje</button>
+  </nav>
+
+  <div id="app">
+
+    <div class="brand">
+      <div class="brand-badge">
+        <div class="brand-icon" id="main-brand-icon" style="padding:2px;"></div>
+        <div>
+          <div class="brand-name">OSZFORD</div>
+          <div class="brand-sub">PreOp Digital</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-header-row">
+          <span class="card-title" id="hdr-title">Bienvenido</span>
+          <span class="card-step-lbl" id="hdr-step"></span>
+        </div>
+      </div>
+
+      <!-- Progress bar (2 dots only) -->
+      <div class="progress-wrap" id="prog-wrap">
+        <div class="progress-steps">
+          <div class="pdot" id="pd0"></div>
+          <div class="pdot" id="pd1"></div>
+        </div>
+      </div>
+
+      <div class="card-body">
+
+        <!-- ═══ S-LOGIN ═══════════════════════ -->
+        <div class="screen" id="s-login">
+          <p class="sec-hint">¿Quién eres?</p>
+          <div class="role-grid">
+
+            <div class="role-card selected" id="rc-colab" onclick="setRole('colab')">
+              <div class="card-icon" id="rc-colab-icon"></div>
+              <div class="role-label">Colaborador</div>
+              <div class="role-sub">Inspección diaria</div>
+            </div>
+
+            <div class="role-card" id="rc-super" onclick="setRole('super')">
+              <div class="card-icon" id="rc-super-icon"></div>
+              <div class="role-label">Supervisor</div>
+              <div class="role-sub">Panel de control</div>
+            </div>
+
+          </div>
+
+          <div class="divider">acceso</div>
+
+          <div class="field">
+            <label>Cédula <span class="req">*</span></label>
+            <input type="text" id="l-ced" placeholder="Ej: 1005123456" inputmode="numeric" maxlength="12"
+              oninput="this.value=this.value.replace(/\D/g,'')" />
+            <div class="f-err">Ingresa tu cédula (mín. 7 dígitos)</div>
+          </div>
+
+          <div class="field">
+            <label>PIN <span class="req">*</span></label>
+            <div class="pin-row">
+              <input class="pin-in" type="password" maxlength="1" inputmode="numeric" id="lp0"
+                oninput="pinNav('lp',0)" />
+              <input class="pin-in" type="password" maxlength="1" inputmode="numeric" id="lp1"
+                oninput="pinNav('lp',1)" />
+              <input class="pin-in" type="password" maxlength="1" inputmode="numeric" id="lp2"
+                oninput="pinNav('lp',2)" />
+              <input class="pin-in" type="password" maxlength="1" inputmode="numeric" id="lp3"
+                oninput="pinNav('lp',3)" />
+            </div>
+            <div class="f-err" id="l-pin-err" style="text-align:center">PIN incorrecto o incompleto</div>
+          </div>
+
+          <div style="margin-top:18px">
+            <button class="btn btn-gold" onclick="doLogin()">
+              <span id="l-btn-txt">Ingresar →</span>
+              <span id="l-spin" style="display:none">
+                <div class="spinner spinner-dark"></div>
+              </span>
+            </button>
+          </div>
+        </div>
+
+        <!-- ═══ S-HOME ════════════════════════ -->
+        <div class="screen" id="s-home">
+          <div class="user-bar">
+            <div class="user-av">CT</div>
+            <div style="flex:1">
+              <div class="user-name">Carlos Torres</div>
+              <div class="user-sub">Vigilante · Turno Diurno</div>
+            </div>
+            <span class="badge-tag">● Activo</span>
+          </div>
+
+          <div class="alert alert-info">📋 Registra la inspección de tu vehículo antes de iniciar el turno.</div>
+
+          <!-- Tipo de vehículo con SVG icons -->
+          <p class="sec-hint">Tipo de vehículo</p>
+          <div class="vtype-grid">
+            <div class="vtype-card selected" id="vt-moto" onclick="selectVT('moto')">
+              <div class="card-icon" id="vt-moto-icon"></div>
+              <div class="v-label">Motocicleta</div>
+            </div>
+            <div class="vtype-card" id="vt-elec" onclick="selectVT('elec')">
+              <div class="card-icon" id="vt-elec-icon"></div>
+              <div class="v-label">Moto eléctrica</div>
+            </div>
+            <div class="vtype-card" id="vt-bici" onclick="selectVT('bici')">
+              <div class="card-icon" id="vt-bici-icon"></div>
+              <div class="v-label">Bicicleta</div>
+            </div>
+            <div class="vtype-card" id="vt-pat" onclick="selectVT('pat')">
+              <div class="card-icon" id="vt-pat-icon"></div>
+              <div class="v-label">Patineta</div>
+            </div>
+          </div>
+
+          <!-- Propiedad -->
+          <p class="sec-hint">Propiedad del vehículo</p>
+          <div class="owner-grid">
+            <div class="owner-card selected" id="ow-propio" onclick="selectOwner('propio')">
+              <div class="card-icon" id="ow-propio-icon"></div>
+              <div class="owner-label">Vehículo propio</div>
+              <div class="owner-sub">Del colaborador</div>
+            </div>
+            <div class="owner-card" id="ow-empresa" onclick="selectOwner('empresa')">
+              <div class="card-icon" id="ow-empresa-icon"></div>
+              <div class="owner-label">De la empresa</div>
+              <div class="owner-sub">Activo OSZFORD</div>
+            </div>
+          </div>
+
+          <!-- Datos del vehículo — solo motos -->
+          <div id="placa-section">
+            <p class="sec-hint">Datos del vehículo</p>
+
+            <div class="field">
+              <label>Placa <span class="req">*</span></label>
+              <div class="plate-wrap">
+                <input type="text" id="h-placa" maxlength="6" placeholder="ABC123" oninput="formatPlate(this)"
+                  onblur="checkPlateDuplicate(this.value)" />
+                <span class="plate-badge">COL</span>
+                <button class="cam-btn" onclick="triggerPlatePhoto()" title="Escanear placa">
+                  <div style="width:22px;height:22px" id="plate-cam-icon"></div>
+                </button>
+              </div>
+              <input type="file" id="plate-photo-file" accept="image/*" capture="environment"
+                onchange="processPlatePhoto(this)" style="display:none" />
+              <div class="alert alert-ok" id="plate-status" style="display:none;margin-top:6px"></div>
+              <div class="photo-stamp" id="plate-stamp" style="display:none"></div>
+            </div>
+
+            <div class="row2">
+              <div class="field">
+                <label>SOAT — vence</label>
+                <input type="date" id="h-soat" />
+              </div>
+              <div class="field">
+                <label>Tecnomecánica — vence</label>
+                <input type="date" id="h-tecno" />
+                <!-- No aplica para vehículos menores de 5 años -->
+                <label class="check-inline"
+                  style="margin-top:6px;display:flex;align-items:center;gap:6px;cursor:pointer">
+                  <input type="checkbox" id="tecno-na" onchange="toggleTecnoNA(this)" class="circle-check" />
+                  <span style="font-size:12px;color:var(--muted);font-weight:500">No aplica (vehículo &lt; 5
+                    años)</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Turno y puesto -->
+          <p class="sec-hint">Turno y puesto</p>
+          <div class="row2">
+            <div class="field">
+              <label>Turno</label>
+              <div class="sel-wrap">
+                <select id="h-turno">
+                  <option value="d">Diurno (6AM–6PM)</option>
+                  <option value="n">Nocturno (6PM–6AM)</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Puesto</label>
+              <div class="sel-wrap">
+                <select id="h-puesto">
+                  <option value="norte">Sede Norte</option>
+                  <option value="sur">Sede Sur</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" onclick="goTo('s-inspect')">Iniciar inspección →</button>
+        </div>
+
+        <!-- ═══ S-INSPECT ═════════════════════ -->
+        <div class="screen" id="s-inspect">
+          <p class="sec-hint" id="inspect-subtitle">Inspección — Motocicleta</p>
+
+          <div class="v-legend" style="margin-bottom:10px">
+            <div class="leg-item">
+              <div class="leg-dot" style="background:#16A34A"></div>Verde — Bueno
+            </div>
+            <div class="leg-item">
+              <div class="leg-dot" style="background:#D97706"></div>Amarillo — Deteriorado
+            </div>
+            <div class="leg-item">
+              <div class="leg-dot" style="background:#DC2626"></div>Rojo — Malo
+            </div>
+          </div>
+
+          <div class="vehicle-diagram">
+            <svg id="vehicle-svg" viewBox="0 0 510 240" width="100%"></svg>
+            <div class="v-legend" style="border-top:1px solid var(--border);margin-top:6px;padding-top:6px">
+              <span style="font-size:11px;color:var(--navy);font-weight:600">Toca cada número para marcar el
+                estado</span>
+            </div>
+          </div>
+
+          <div id="check-list" style="margin-top:12px"></div>
+
+          <div class="alert alert-warn" id="inspect-warn" style="display:none;margin-top:10px">
+            ⚠️ Elementos en estado ROJO — se generará alerta al supervisor.
+          </div>
+          <div class="alert alert-ok" id="inspect-ok" style="display:none;margin-top:10px">
+            ✅ Inspección completa.
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-back" onclick="goTo('s-home')">←</button>
+            <button class="btn btn-primary" onclick="submitInspect()">Continuar →</button>
+          </div>
+        </div>
+
+        <!-- ═══ S-KM: km inicial + km final + novedades (todo junto) ═══ -->
+        <div class="screen" id="s-km">
+          <p class="sec-hint">Kilometraje del turno</p>
+
+          <!-- KM INICIAL -->
+          <p style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px">Km inicial — inicio de turno
+          </p>
+
+          <div class="field">
+            <label>Foto del tablero <span class="req">*</span></label>
+            <div class="ocr-zone" id="ocr-zone" onclick="triggerOCR()">
+              <div class="scan-line"></div>
+              <input type="file" id="ocr-file" accept="image/*" capture="environment" onchange="processOCR(this)"
+                style="pointer-events:none" />
+              <span class="ocr-ico" id="ocr-ico">
+                <!-- camera SVG inline -->
+                <svg viewBox="0 0 64 52" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="14" width="56" height="34" rx="6" fill="#0B1E6B" />
+                  <path d="M20 14 L24 6 L40 6 L44 14" fill="#0B1E6B" />
+                  <circle cx="32" cy="32" r="12" fill="#F5C01E" />
+                  <circle cx="32" cy="32" r="7" fill="#0B1E6B" />
+                  <circle cx="32" cy="32" r="3" fill="#F5C01E" />
+                  <circle cx="50" cy="22" r="4" fill="#F5C01E" />
+                </svg>
+              </span>
+              <div class="ocr-lbl" id="ocr-lbl">Toca para abrir la cámara</div>
+              <div class="ocr-sub" id="ocr-sub">Apunta al tablero del vehículo</div>
+            </div>
+            <div class="alert alert-red" id="ocr-error" style="display:none;margin-top:8px"></div>
+            <div class="photo-stamp" id="ocr-stamp" style="display:none"></div>
+            <div class="ocr-result" id="ocr-result">
+              <span style="font-size:20px">🔢</span>
+              <div>
+                <div class="ocr-km-val" id="ocr-val">—</div>
+                <div class="ocr-km-lbl">Km detectados</div>
+              </div>
+              <span class="ocr-conf" id="ocr-conf">—%</span>
+            </div>
+          </div>
+
+          <div class="field" id="km-field">
+            <label>Confirmar km inicial <span class="req">*</span></label>
+            <input type="number" id="km-val" placeholder="Ej: 28540" inputmode="numeric" min="0"
+              oninput="validateKm()" />
+            <div class="hint" id="km-hint">Ingresa o corrige el valor si es necesario</div>
+            <div class="f-err" id="km-err">El valor no coincide con la foto del tablero (±50 km)</div>
+          </div>
+
+          <div class="km-divider"></div>
+
+          <!-- KM FINAL -->
+          <p style="font-size:13px;font-weight:700;color:var(--navy);margin:16px 0 10px">Km final — fin de turno</p>
+
+          <div class="field">
+            <label>Foto del tablero final <span class="req">*</span></label>
+            <div class="ocr-zone" id="ocr2-zone" onclick="triggerOCR2()">
+              <div class="scan-line"></div>
+              <input type="file" id="ocr2-file" accept="image/*" capture="environment" onchange="processOCR2(this)"
+                style="pointer-events:none" />
+              <span class="ocr-ico" id="ocr2-ico">
+                <svg viewBox="0 0 64 52" width="36" height="36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="4" y="14" width="56" height="34" rx="6" fill="#0B1E6B" />
+                  <path d="M20 14 L24 6 L40 6 L44 14" fill="#0B1E6B" />
+                  <circle cx="32" cy="32" r="12" fill="#F5C01E" />
+                  <circle cx="32" cy="32" r="7" fill="#0B1E6B" />
+                  <circle cx="32" cy="32" r="3" fill="#F5C01E" />
+                  <circle cx="50" cy="22" r="4" fill="#F5C01E" />
+                </svg>
+              </span>
+              <div class="ocr-lbl" id="ocr2-lbl">Fotografía el tablero al terminar</div>
+              <div class="ocr-sub" id="ocr2-sub">Registra el km final del turno</div>
+            </div>
+            <div class="alert alert-red" id="ocr2-error" style="display:none;margin-top:8px"></div>
+            <div class="photo-stamp" id="ocr2-stamp" style="display:none"></div>
+            <div class="ocr-result" id="ocr2-result">
+              <span style="font-size:20px">🔢</span>
+              <div>
+                <div class="ocr-km-val" id="ocr2-val">—</div>
+                <div class="ocr-km-lbl"><strong id="km-diff-lbl">— km recorridos hoy</strong></div>
+              </div>
+              <span class="ocr-conf" id="ocr2-conf">—%</span>
+            </div>
+          </div>
+
+          <!-- NOVEDADES -->
+          <div class="field" style="margin-top:4px">
+            <label>Novedades del turno</label>
+            <textarea id="fin-novedad" placeholder="Sin novedades / describe lo ocurrido..."
+              style="width:100%;min-height:72px;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;background:var(--off);font-family:var(--font);font-size:14px;resize:none;outline:none;transition:border-color .2s"
+              onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'"></textarea>
+          </div>
+
+          <div class="btn-row">
+            <button class="btn-back" onclick="goTo('s-inspect')">←</button>
+            <button class="btn btn-gold" onclick="submitKm()">Cerrar turno ✓</button>
+          </div>
+        </div>
+
+        <!-- ═══ S-DONE: Resumen final ══════════ -->
+        <div class="screen" id="s-done">
+          <div class="success-circle bg-green">✓</div>
+          <div class="success-title">¡Turno cerrado!</div>
+          <div class="success-sub">Tu registro fue validado y enviado al supervisor.</div>
+          <div class="info-box">
+            <div class="info-row"><span class="info-k">Vehículo · Placa</span><span class="info-v" id="d-veh">—</span>
+            </div>
+            <div class="info-row"><span class="info-k">Propiedad · Puesto</span><span class="info-v"
+                id="d-owner">—</span></div>
+            <div class="info-row"><span class="info-k">Km inicial</span><span class="info-v" id="d-km-ini">—</span>
+            </div>
+            <div class="info-row"><span class="info-k">Km final</span><span class="info-v" id="d-km-fin">—</span></div>
+            <div class="info-row"><span class="info-k">Km recorridos</span><span class="info-v" id="d-km-rec"
+                style="color:var(--green)">—</span></div>
+            <div class="info-row"><span class="info-k">Estado inspección</span><span class="info-v"
+                id="d-estado">—</span></div>
+            <div class="info-row"><span class="info-k">Fotos tomadas</span><span class="info-v" id="d-fotos">—</span>
+            </div>
+            <div class="info-row"><span class="info-k">Hora cierre</span><span class="info-v" id="d-hora">—</span></div>
+          </div>
+          <button class="btn btn-primary" onclick="goTo('s-login')">Finalizar sesión</button>
+        </div>
+
+        <!-- ═══ S-DASH ════════════════════════ -->
+        <div class="screen" id="s-dash">
+          <div class="dash-header">
+            <div>
+              <div class="dash-title">Panel supervisor</div>
+              <div class="dash-date" id="dash-date">—</div>
+            </div>
+            <div
+              style="width:38px;height:38px;border-radius:50%;background:var(--navy);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:13px;font-weight:800">
+              AD</div>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-card">
+              <div class="stat-num">47<span style="font-size:14px;color:var(--muted)">/62</span></div>
+              <div class="stat-lbl">Inspecciones hoy</div><span class="stat-badge b-warn">75.8%</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num" style="color:var(--red)">8</div>
+              <div class="stat-lbl">Alertas activas</div><span class="stat-badge b-red">3 urgentes</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">2,340</div>
+              <div class="stat-lbl">Km flota hoy</div><span class="stat-badge b-ok">+12% ayer</span>
+            </div>
+            <div class="stat-card">
+              <div class="stat-num">15</div>
+              <div class="stat-lbl">Sin inspección</div><span class="stat-badge b-red">Pendientes</span>
+            </div>
+          </div>
+
+          <div class="dash-sec-title">📈 Cumplimiento — 7 días</div>
+          <div class="chart-wrap"><canvas id="compChart" height="110"></canvas></div>
+
+          <div class="dash-sec-title">👷 Estado colaboradores</div>
+          <div class="comp-row">
+            <div class="comp-av">CT</div>
+            <div style="flex:1">
+              <div class="comp-name">Carlos Torres</div>
+              <div class="comp-sub">EKT291 · propio · 7:45 AM</div>
+            </div><span class="comp-st st-ok">✓ Completo</span>
+          </div>
+          <div class="comp-row">
+            <div class="comp-av">ML</div>
+            <div style="flex:1">
+              <div class="comp-name">María López</div>
+              <div class="comp-sub">XYZ789 · empresa · 8:02 AM</div>
+            </div><span class="comp-st st-ok">✓ Completo</span>
+          </div>
+          <div class="comp-row">
+            <div class="comp-av">JR</div>
+            <div style="flex:1">
+              <div class="comp-name">Juan Rodríguez</div>
+              <div class="comp-sub">DEF456 · propio · En progreso</div>
+            </div><span class="comp-st st-prog">⏳ Parcial</span>
+          </div>
+          <div class="comp-row">
+            <div class="comp-av">PG</div>
+            <div style="flex:1">
+              <div class="comp-name">Pedro Gómez</div>
+              <div class="comp-sub">GHI012 · empresa · Sin registro</div>
+            </div><span class="comp-st st-no">✗ Pendiente</span>
+          </div>
+
+          <div class="dash-sec-title" style="margin-top:16px">🔔 Alertas documentos</div>
+          <div class="alert-row urgente">
+            <div style="flex:1">
+              <div class="a-lbl">🔴 SOAT vencido</div>
+              <div class="a-sub">Moto QRS789 · empresa · hace 12 días</div>
+            </div><span style="font-size:11px;font-weight:700;color:var(--red)">Urgente</span>
+          </div>
+          <div class="alert-row urgente">
+            <div style="flex:1">
+              <div class="a-lbl">🔴 SOAT por vencer</div>
+              <div class="a-sub">Moto ABC456 · Carlos Vega · propio</div>
+            </div><span style="font-size:11px;font-weight:700;color:var(--red)">5 días</span>
+          </div>
+          <div class="alert-row proximo">
+            <div style="flex:1">
+              <div class="a-lbl">🟡 Licencia por vencer</div>
+              <div class="a-sub">Pedro Salcedo · Cat. A2</div>
+            </div><span style="font-size:11px;font-weight:700;color:var(--orange)">18 días</span>
+          </div>
+
+          <div class="dash-sec-title" style="margin-top:16px">🏍️ Km por vehículo (hoy)</div>
+          <div class="chart-wrap"><canvas id="kmChart" height="120"></canvas></div>
+
+          <button class="btn btn-ghost" onclick="goTo('s-login')" style="margin-top:4px">← Cerrar sesión</button>
+        </div>
+
+      </div><!-- /card-body -->
+      <div class="card-footer">
+        <p id="card-footer-txt"></p>
+      </div>
+    </div><!-- /card -->
+
+    <p style="color:rgba(255,255,255,.2);font-size:11px;text-align:center;margin-top:16px">
+      OSZFORD Seguridad Especializada · v2.2
+    </p>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/vehicles.js"></script>
+  <script src="js/ocr.js"></script>
+  <script src="js/inspection.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+
+</html>
