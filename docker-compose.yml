@@ -1,14 +1,12 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0
     container_name: mysql_db
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: titanic_db
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      MYSQL_DATABASE: oszford_db          # ← Cambiar de titanic_db
+      MYSQL_USER: oszford_user            # ← Cambiar user
+      MYSQL_PASSWORD: secure_password
     ports:
       - "3306:3306"
     volumes:
@@ -20,7 +18,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=mysql+pymysql://user:password@db:3306/titanic_db
+      - DATABASE_URL=mysql+pymysql://oszford_user:secure_password@db:3306/oszford_db
     depends_on:
       - db
 

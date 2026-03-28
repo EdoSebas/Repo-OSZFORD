@@ -318,20 +318,26 @@ function validateKm() {
   }
 }
 
-function submitKm() {
+async function submitKm() {
   if (!OCR.ini.done) {
     alert('Debes fotografiar el odómetro para continuar.');
     return;
   }
+  
   const km = parseInt(document.getElementById('km-val').value || '0');
   if (!km || km < 0) { alert('Ingresa el kilometraje inicial.'); return; }
   if (Math.abs(km - OCR.ini.km) > 50) {
     alert(`El valor ingresado (${km} km) no coincide con el OCR (${OCR.ini.km} km). Máx. ±50 km.`);
     return;
   }
-  // Store for fin turno
-  document.getElementById('fin-km-ini').textContent = km.toLocaleString('es-CO') + ' km';
-  goTo("s-done");
+  
+  try {
+    await API.recordKm(SESSION.jornada_id, km);
+    document.getElementById('fin-km-ini').textContent = km.toLocaleString('es-CO') + ' km';
+    goTo("s-km");
+  } catch (err) {
+    alert('Error registrando km: ' + err.message);
+  }
 }
 
 function submitFin() {

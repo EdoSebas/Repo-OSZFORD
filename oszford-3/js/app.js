@@ -7,6 +7,13 @@ const APP = {
   vehicleOwner: 'propio',
 };
 
+const SESSION = {
+  jornada_id: null,
+  preoperacional_id: null,
+  vehiculo_id: null,
+  colaborador_cedula: null,
+};
+
 const HEADERS = {
   's-login': { t: 'Acceso al sistema', s: '' },
   's-home': { t: 'Mi jornada', s: '' },
@@ -77,25 +84,57 @@ function setRole(role) {
 function pinNav(pfx, i) {
   const el = document.getElementById(pfx + i);
   el.value = el.value.replace(/\D/g, '');
-  if (el.value && i < 3) document.getElementById(pfx + (i + 1))?.focus();
+  
+  // Si escribió algo, ir al siguiente
+  if (el.value && i < 3) {
+    document.getElementById(pfx + (i + 1)).focus();
+  }
+  
+  // Si presionó backspace y está vacío, ir al anterior
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'Backspace' && !el.value && i > 0) {
+      document.getElementById(pfx + (i - 1)).focus();
+    }
+  });
 }
 
-function doLogin() {
+
+async function doLogin() {
   const ced = document.getElementById('l-ced').value.trim();
   const pin = ['lp0', 'lp1', 'lp2', 'lp3'].map(id => document.getElementById(id).value).join('');
   const cedField = document.getElementById('l-ced');
+  
   if (ced.length < 7) { cedField.parentElement.classList.add('has-err'); return; }
   cedField.parentElement.classList.remove('has-err');
+  
   const pinErr = document.getElementById('l-pin-err');
   if (pin.length < 4) { pinErr.style.display = 'block'; return; }
   pinErr.style.display = 'none';
+  
   const btnTxt = document.getElementById('l-btn-txt');
   const btnSpin = document.getElementById('l-spin');
-  btnTxt.style.display = 'none'; btnSpin.style.display = 'inline';
-  setTimeout(() => {
-    btnTxt.style.display = 'inline'; btnSpin.style.display = 'none';
-    goTo(APP.role === 'super' ? 's-dash' : 's-home');
-  }, 1200);
+  btnTxt.style.display = 'none';
+  btnSpin.style.display = 'inline';
+  
+  try {
+    const result = await API.login(ced, pin);
+    
+    btnTxt.style.display = 'inline';
+    btnSpin.style.display = 'none';
+    
+    APP.role = result.role;
+    const nextScreen = result.role === 'super' ? 's-dash' : 's-home';
+    goTo(nextScreen);
+    
+    // Actualizar nombre en la pantalla
+document.getElementById('user-name-display').textContent = result.nombre;
+
+  } catch (err) {
+    btnTxt.style.display = 'inline';
+    btnSpin.style.display = 'none';
+    pinErr.textContent = err.message;
+    pinErr.style.display = 'block';
+  }
 }
 
 // ── VEHICLE TYPE ──────────────────────────────

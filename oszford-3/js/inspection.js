@@ -133,13 +133,20 @@ function checkWarnings() {
 }
 
 // ─── SUBMIT ───────────────────────────────────
-function submitInspect() {
+async function submitInspect() {
   const checked = inspectStates.filter(s => s > 0).length;
   const total   = inspectStates.length;
+  
   if (checked < total) {
     if (!confirm(`Faltan ${total - checked} elemento(s) por evaluar. ¿Continuar de todos modos?`)) return;
   }
-  goTo('s-km');
+  
+  try {
+    await API.completePreoperacional(SESSION.preoperacional_id);
+    goTo('s-km');
+  } catch (err) {
+    alert('Error completando inspección: ' + err.message);
+  }
 }
 
 // ─── SUMMARY ─────────────────────────────────
