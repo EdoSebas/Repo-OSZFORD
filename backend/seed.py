@@ -6,18 +6,19 @@ models.Base.metadata.create_all(bind=engine)
 
 db = SessionLocal()
 
+
 # Limpiar datos existentes para re-seed
-db.query(models.Alerta).delete()
-db.query(models.InspeccionItem).delete()
-db.query(models.Jornada).delete()
-db.query(models.PreoperacionalRegistro).delete()
-db.query(models.Vehiculo).delete()
-db.query(models.Colaborador).delete()
-db.commit()
-print("🗑️  Datos anteriores eliminados")
+#db.query(models.Alerta).delete()
+#db.query(models.InspeccionItem).delete()
+#db.query(models.Jornada).delete()
+#db.query(models.PreoperacionalRegistro).delete()
+#db.query(models.Vehiculo).delete()
+#db.query(models.Colaborador).delete()
+#db.commit()
+#print("🗑️  Datos anteriores eliminados")
 
 # Crear 30 colaboradores.
-colaboradores = [
+colaboradores = [   
     models.Colaborador(cedula="1005123456", pin="1234", nombre="Carlos Torres", rol="colab"),
     models.Colaborador(cedula="1005654321", pin="5678", nombre="Maria Lopez", rol="colab"),
     models.Colaborador(cedula="1005000111", pin="9999", nombre="Admin User", rol="super"),
